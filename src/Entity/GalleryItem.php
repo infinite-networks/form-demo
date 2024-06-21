@@ -6,32 +6,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Infinite\FormBundle\Attachment\Attachment;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class GalleryItem extends Attachment
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\Id
-     * @var null|int
-     */
-    protected $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
+    protected ?int $id = null;
 
-    /**
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\ManyToOne(targetEntity="Gallery", inversedBy="items")
-     * @var Gallery|null
-     */
-    protected $gallery;
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Gallery::class, inversedBy: 'items')]
+    protected ?Gallery $gallery = null;
 
-    /**
-     * @Assert\NotBlank
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    protected $title = '';
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string')]
+    protected string $title = '';
 
     public function getId(): ?int
     {

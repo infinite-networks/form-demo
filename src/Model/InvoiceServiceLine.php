@@ -6,68 +6,41 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class InvoiceServiceLine extends AbstractInvoiceLine
 {
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    protected $description;
+    #[Assert\NotBlank]
+    protected string $description = '';
 
-    /**
-     * @Assert\NotBlank
-     * @var float
-     */
-    protected $quantity;
+    #[Assert\NotBlank]
+    protected float $quantity = 0;
 
-    /**
-     * @Assert\NotBlank
-     * @var float
-     */
-    protected $unitPrice;
+    #[Assert\NotBlank]
+    protected float $unitPrice = 0;
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @return float
-     */
-    public function getQuantity()
+    public function getQuantity(): float
     {
         return $this->quantity;
     }
 
-    /**
-     * @return float
-     */
-    public function getUnitPrice()
+    public function getUnitPrice(): float
     {
         return $this->unitPrice;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
-        $this->description = $description;
+        $this->description = $description ?? '';
     }
 
-    /**
-     * @param float $quantity
-     */
-    public function setQuantity($quantity)
+    public function setQuantity(float $quantity): void
     {
         $this->quantity = $quantity;
     }
 
-    /**
-     * @param float $unitPrice
-     */
-    public function setUnitPrice($unitPrice)
+    public function setUnitPrice(float $unitPrice): void
     {
         $this->unitPrice = $unitPrice;
     }

@@ -4,26 +4,11 @@ namespace App\Model;
 
 abstract class AbstractInvoiceLine
 {
-    /**
-     * @return string
-     */
-    public abstract function getDescription();
-
-    /**
-     * @return float
-     */
-    public abstract function getQuantity();
-
-    /**
-     * @return float
-     */
-    public function getTotalPrice()
+    public abstract function getDescription(): string;
+    public abstract function getQuantity(): float;
+    public function getTotalPrice(): float
     {
         return $this->getQuantity() * $this->getUnitPrice();
     }
-
-    /**
-     * @return float
-     */
-    public abstract function getUnitPrice();
+    public abstract function getUnitPrice(): float;
 }

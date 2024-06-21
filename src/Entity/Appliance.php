@@ -5,60 +5,41 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Appliance
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\Id
-     *
-     * @var int
-     */
-    protected $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
+    protected ?int $id = null;
 
-    /**
-     * @Assert\NotBlank
-     * @ORM\Column(type="string", length=200)
-     *
-     * @var string
-     */
-    protected $name;
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string', length: 200)]
+    protected string $name = '';
 
-    /**
-     * @ORM\OneToOne(targetEntity="ApplianceManual", cascade={"persist"}, orphanRemoval=true)
-     * @var ApplianceManual|null
-     */
-    protected $manual;
+    #[ORM\OneToOne(targetEntity: ApplianceManual::class, cascade: ['persist'], orphanRemoval: true)]
+    protected ?ApplianceManual $manual = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
-        $this->name = $name;
+        $this->name = $name ?? '';
     }
 
-    /**
-     * @return ApplianceManual|null
-     */
     public function getManual(): ?ApplianceManual
     {
         return $this->manual;
     }
 
-    /**
-     * @param ApplianceManual|null $manual
-     */
     public function setManual(?ApplianceManual $manual): void
     {
         $this->manual = $manual;

@@ -7,19 +7,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Invoice
 {
     /**
-     * @Assert\Valid
-     * @Assert\Count(min=1)
      * @var AbstractInvoiceLine[]
      */
-    public $lines;
+    #[Assert\Valid]
+    #[Assert\Count(min: 1)]
+    public array $lines = [];
 
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    public $recipient;
+    #[Assert\NotBlank]
+    public ?string $recipient = null;
 
-    public function getTotal()
+    public function getTotal(): float
     {
         $total = 0;
 

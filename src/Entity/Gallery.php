@@ -7,31 +7,23 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Gallery
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\Id
-     * @var null|int
-     */
-    protected $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
+    protected ?int $id = null;
 
-    /**
-     * @Assert\NotBlank
-     * @ORM\Column(type="string")
-     * @var string
-     */
-    protected $title = '';
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string')]
+    protected string $title = '';
 
+    #[ORM\OneToMany(targetEntity: GalleryItem::class, mappedBy: 'gallery', cascade: ['persist'], orphanRemoval: true)]
     /**
-     * @ORM\OneToMany(targetEntity="GalleryItem", mappedBy="gallery", cascade={"persist"}, orphanRemoval=true)
      * @var Collection|GalleryItem[]
      */
-    protected $items;
+    protected Collection $items;
 
     public function __construct()
     {
@@ -50,24 +42,24 @@ class Gallery
 
     public function setTitle(?string $title): void
     {
-        $this->title = $title !== null ? $title : '';
+        $this->title = $title ?? '';
     }
 
     /**
      * @return GalleryItem[]|Collection
      */
-    public function getItems()
+    public function getItems(): Collection|array
     {
         return $this->items;
     }
 
-    public function addItem(GalleryItem $galleryItem)
+    public function addItem(GalleryItem $galleryItem): void
     {
         $this->items->add($galleryItem);
         $galleryItem->setGallery($this);
     }
 
-    public function removeItem(GalleryItem $galleryItem)
+    public function removeItem(GalleryItem $galleryItem): void
     {
         $this->items->removeElement($galleryItem);
     }

@@ -6,43 +6,34 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * An area in which a salesman can operate.
- *
- * @ORM\Entity
  */
+#[ORM\Entity]
 class Area
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\Id
-     *
-     * @var int
-     */
-    protected $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
+    protected ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     *
-     * @var string
-     */
-    protected $name;
+    #[ORM\Column(type: 'string', length: 50)]
+    protected string $name = '';
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
-        $this->name = $name;
+        $this->name = $name ?? '';
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }

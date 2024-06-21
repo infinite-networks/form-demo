@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Country;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Infinite\FormBundle\Form\Type\EntitySearchType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,15 +17,18 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class CountryController extends AbstractController
 {
-    /**
-     * @Route("/country/", name="country")
-     * @param Request $request
-     */
-    public function countryAction(Request $request)
+	public function __construct(
+		private readonly ManagerRegistry $doctrine,
+	)
+	{
+	}
+
+    #[Route('/country/', name: 'country')]
+    public function countryAction(Request $request): Response
     {
         // Verify that there are some countries in the database.
         // If not, prompt the user to click a button to create them.
-        $firstCountry = $this->getDoctrine()->getRepository(Country::class)->findOneBy([]);
+        $firstCountry = $this->doctrine->getRepository(Country::class)->findOneBy([]);
 
         if (null === $firstCountry) {
             $this->addFlash('country_not_defined', '');
@@ -50,21 +54,16 @@ class CountryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/country/setup", name="country_setup")
-     * @return Response
-     */
-    public function loadCountriesAction(Request $request)
+    #[Route('/country/setup', name: 'country_setup')]
+    public function loadCountriesAction(Request $request): Response
     {
-        $expectedToken = $this->get('security.csrf.token_manager')->getToken('country_setup')->getValue();
-
-        if (!hash_equals($expectedToken, $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('country_setup', $request->request->get('_token'))) {
             throw new InvalidCsrfTokenException();
         }
 
         /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->getConnection()->executeUpdate(sprintf('DELETE FROM %s', $em->getClassMetadata(Country::class)->getTableName()));
+        $em = $this->doctrine->getManager();
+        $em->getConnection()->executeStatement(sprintf('DELETE FROM %s', $em->getClassMetadata(Country::class)->getTableName()));
 
         foreach (Countries::getNames('en') as $countryName) {
             $em->persist($country = new Country());
@@ -76,17 +75,13 @@ class CountryController extends AbstractController
         return $this->redirect($request->headers->get('referer', $this->generateUrl('home')));
     }
 
-    /**
-     * @Route("/country/search.json", name="country_search_json")
-     *
-     * @return Response
-     */
-    public function countrySearchJson(Request $request)
+    #[Route('/country/search.json', name: 'country_search_json')]
+    public function countrySearchJson(Request $request): Response
     {
         $query = $request->query->get('query');
 
         /** @var EntityRepository $repo */
-        $repo = $this->getDoctrine()->getRepository(Country::class);
+        $repo = $this->doctrine->getRepository(Country::class);
 
         $qb = $repo->createQueryBuilder('c');
         $qb->andWhere('c.name LIKE :match');

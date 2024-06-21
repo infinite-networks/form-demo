@@ -2,8 +2,12 @@
     "license": "UNLICENSED",
     "private": true,
     "devDependencies": {
-        "@symfony/webpack-encore": "^0.22.0",
-        "webpack-notifier": "^1.6.0"
+        "@symfony/webpack-encore": "^4.6",
+        "@babel/core": "^7.24",
+        "@babel/preset-env": "^7.24",
+        "webpack": "^5.92",
+        "webpack-cli": "^5.1",
+        "webpack-notifier": "^1.15"
     },
     "scripts": {
         "dev-server": "encore dev-server",

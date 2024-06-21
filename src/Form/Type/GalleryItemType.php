@@ -11,24 +11,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GalleryItemType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', TextType::class, [
             'required' => false, // For demonstration purposes
         ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'gallery_item';
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return AttachmentType::class;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'allowed_mime_types' => ['image/jpeg', 'image/png'],

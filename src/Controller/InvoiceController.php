@@ -13,12 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class InvoiceController extends AbstractController
 {
-    /**
-     * @Route("/invoice/", name="invoice_add")
-     * @param Request $request
-     * @return Response
-     */
-    public function invoiceCreateAction(Request $request)
+    #[Route('/invoice/', name: 'invoice_add')]
+    public function invoiceCreateAction(Request $request): Response
     {
         $invoice = new Invoice();
         $invoice->recipient = 'John Smith';

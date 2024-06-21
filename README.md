@@ -1,13 +1,13 @@
-Infinite Form Demo (5.0)
+Infinite Form Demo (6.4)
 ===============
 
-A project to demonstrate the Infinite Form bundle under Symfony 5.0.
+A project to demonstrate the Infinite Form bundle under Symfony 6.4.
 
 Installation
 ------------
 
 * composer install
-* copy .env.dist to .env and set up a database connection
-* bin/console d:s:u -f
+* copy .env to .env.local and set up a database connection
+* bin/console d:s:u -f --complete
 * yarn install
 * yarn run encore dev

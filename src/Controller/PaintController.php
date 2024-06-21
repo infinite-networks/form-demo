@@ -11,12 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PaintController extends AbstractController
 {
-    /**
-     * @Route("/paint", name="paint")
-     * @param Request $request
-     * @return Response
-     */
-    public function paintAction(Request $request)
+    #[Route('/paint', name: 'paint')]
+    public function paintAction(Request $request): Response
     {
         $paints = new Paints;
         $paints->paints[] = ['color' => 'white', 'finish' => 'high_gloss'];

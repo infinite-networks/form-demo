@@ -7,7 +7,8 @@ use Doctrine\ORM\EntityManager;
 use App\Entity\Area;
 use App\Entity\Product;
 use App\Entity\Salesman;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as Feb;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,40 +17,35 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SalesmanController extends AbstractController
 {
-    /**
-     * @Route("/salesman/add", name="salesman_add")
-     * @param Request $request
-     * @return Response
-     */
-    public function addSalesmanAction(Request $request)
+	public function __construct(
+		private readonly ManagerRegistry $doctrine,
+	)
+	{
+	}
+
+    #[Route('/salesman/add', name: 'salesman_add')]
+    public function addSalesmanAction(Request $request): Response
     {
         return $this->editSalesmanAction(new Salesman, $request);
     }
 
-    /**
-     * @Feb\ParamConverter("salesman", converter="doctrine.orm")
-     * @Route("/salesman/{id}/edit", name="salesman_edit", requirements={"id" = "\d+"})
-     * @param Salesman $salesman
-     * @param Request  $request
-     * @return Response
-     */
-    public function editSalesmanAction(Salesman $salesman, Request $request)
+    #[Route('/salesman/{id}/edit', name: 'salesman_edit', requirements: ['id' => '\d+'])]
+    public function editSalesmanAction(#[MapEntity] Salesman $salesman, Request $request): Response
     {
         // Verify that some products and areas are defined.
         // This is for demonstration purposes and not part of the normal code path.
-        $firstProduct = $this->getDoctrine()->getRepository(Product::class)->findOneBy([]);
-        $firstArea = $this->getDoctrine()->getRepository(Area::class)->findOneBy([]);
+        $firstProduct = $this->doctrine->getRepository(Product::class)->findOneBy([]);
+        $firstArea = $this->doctrine->getRepository(Area::class)->findOneBy([]);
 
         if (null === $firstProduct || null === $firstArea) {
             $this->addFlash('product_or_area_not_defined', '');
         }
 
         $form = $this->createForm(SalesmanType::class, $salesman);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($salesman);
             $em->flush();
 
@@ -64,22 +60,17 @@ class SalesmanController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/salesman/setup", name="salesman_setup")
-     * @return Response
-     */
-    public function loadDefaultsAction(Request $request)
+    #[Route('/salesman/setup', name: 'salesman_setup')]
+    public function loadDefaultsAction(Request $request): Response
     {
-        $expectedToken = $this->get('security.csrf.token_manager')->getToken('salesman_setup')->getValue();
-
-        if (!hash_equals($expectedToken, $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('salesman_setup', $request->request->get('_token'))) {
             throw new InvalidCsrfTokenException();
         }
 
         /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->getConnection()->executeUpdate(sprintf('DELETE FROM %s', $em->getClassMetadata(Product::class)->getTableName()));
-        $em->getConnection()->executeUpdate(sprintf('DELETE FROM %s', $em->getClassMetadata(Area::class)->getTableName()));
+        $em = $this->doctrine->getManager();
+        $em->getConnection()->executeStatement(sprintf('DELETE FROM %s', $em->getClassMetadata(Product::class)->getTableName()));
+        $em->getConnection()->executeStatement(sprintf('DELETE FROM %s', $em->getClassMetadata(Area::class)->getTableName()));
 
         foreach (['Chair', 'Desk', 'Table'] as $productName) {
             $em->persist($product = new Product);

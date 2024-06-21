@@ -6,77 +6,47 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class InvoiceProductLine extends AbstractInvoiceLine
 {
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    protected $productName;
+    #[Assert\NotBlank]
+    protected string $productName = '';
 
-    /**
-     * @Assert\NotBlank
-     * @var float
-     */
-    protected $quantity;
+    #[Assert\NotBlank]
+    protected float $quantity = 0;
 
-    /**
-     * @Assert\NotBlank
-     * @var float
-     */
-    protected $unitPrice;
+    #[Assert\NotBlank]
+    protected float $unitPrice = 0;
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->productName;
     }
 
-    /**
-     * @return float
-     */
-    public function getUnitPrice()
+    public function getUnitPrice(): float
     {
         return $this->unitPrice;
     }
 
-    /**
-     * @param float $unitPrice
-     */
-    public function setUnitPrice($unitPrice)
+    public function setUnitPrice(float $unitPrice): void
     {
         $this->unitPrice = $unitPrice;
     }
 
-    /**
-     * @return float
-     */
-    public function getQuantity()
+    public function getQuantity(): float
     {
         return $this->quantity;
     }
 
-    /**
-     * @param float $quantity
-     */
-    public function setQuantity($quantity)
+    public function setQuantity(float $quantity): void
     {
         $this->quantity = $quantity;
     }
 
-    /**
-     * @return string
-     */
-    public function getProductName()
+    public function getProductName(): string
     {
         return $this->productName;
     }
 
-    /**
-     * @param string $productName
-     */
-    public function setProductName($productName)
+    public function setProductName(?string $productName): void
     {
-        $this->productName = $productName;
+        $this->productName = $productName ?? '';
     }
 }

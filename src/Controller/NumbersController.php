@@ -11,12 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class NumbersController extends AbstractController
 {
-    /**
-     * @Route("/numbers", name="numbers")
-     * @param Request $request
-     * @return Response
-     */
-    public function numbersAction(Request $request)
+    #[Route('/numbers', name: 'numbers')]
+    public function numbersAction(Request $request): Response
     {
         $numbers = new Numbers();
         $numbers->numbers[] = 5;

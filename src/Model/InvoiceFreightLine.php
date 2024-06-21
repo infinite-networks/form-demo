@@ -6,62 +6,38 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class InvoiceFreightLine extends AbstractInvoiceLine
 {
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    protected $courier;
+    #[Assert\NotBlank]
+    protected string $courier = '';
 
-    /**
-     * @Assert\NotBlank
-     * @var float
-     */
-    protected $unitPrice;
+    #[Assert\NotBlank]
+    protected float $unitPrice = 0;
 
-    /**
-     * @return string
-     */
-    public function getCourier()
+    public function getCourier(): ?string
     {
         return $this->courier;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'Shipping: ' . $this->courier;
     }
 
-    /**
-     * @return float
-     */
-    public function getQuantity()
+    public function getQuantity(): float
     {
         return 1;
     }
 
-    /**
-     * @return float
-     */
-    public function getUnitPrice()
+    public function getUnitPrice(): float
     {
         return $this->unitPrice;
     }
 
-    /**
-     * @param string $courier
-     */
-    public function setCourier($courier)
+    public function setCourier(?string $courier = '')
     {
-        $this->courier = $courier;
+        $this->courier = $courier ?? '';
     }
 
-    /**
-     * @param float $unitPrice
-     */
-    public function setUnitPrice($unitPrice)
+    public function setUnitPrice(float $unitPrice): void
     {
         $this->unitPrice = $unitPrice;
     }

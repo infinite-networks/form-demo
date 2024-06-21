@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SalesmanType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('name', TextType::class, [
             'required' => false,
@@ -23,12 +23,7 @@ class SalesmanType extends AbstractType
         ]);
     }
 
-    /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'salesman';
     }

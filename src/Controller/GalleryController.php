@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Gallery;
 use App\Form\Type\GalleryType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as Feb;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,23 +13,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GalleryController extends AbstractController
 {
-    /**
-     * @Route("/gallery/", name="gallery_list")
-     * @return Response
-     */
-    public function listAction()
+	public function __construct(
+		private readonly ManagerRegistry $doctrine,
+	)
+	{
+	}
+
+    #[Route('/gallery/', name: 'gallery_list')]
+    public function listAction(): Response
     {
         return $this->render('Gallery/list.html.twig', [
-            'galleries' => $this->getDoctrine()->getRepository(Gallery::class)->findAll(),
+            'galleries' => $this->doctrine->getRepository(Gallery::class)->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/gallery/add", name="gallery_add")
-     * @param Request $request
-     * @return Response
-     */
-    public function addAction(Request $request)
+    #[Route('/gallery/add', name: 'gallery_add')]
+    public function addAction(Request $request): Response
     {
         $gallery = new Gallery;
         $form = $this->createForm(GalleryType::class, $gallery);
@@ -36,7 +36,7 @@ class GalleryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($gallery);
             $em->flush();
 
@@ -48,16 +48,10 @@ class GalleryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/gallery/{id}/edit", name="gallery_edit", requirements={"id" = "\d+"})
-     * @Feb\ParamConverter("gallery", converter="doctrine.orm")
-     * @param Gallery $gallery
-     * @param Request $request
-     * @return Response
-     */
-    public function editAction(Request $request, Gallery $gallery)
+    #[Route('/gallery/{id}/edit', name: 'gallery_edit', requirements: ['id' => '\d+'])]
+    public function editAction(Request $request, #[MapEntity] Gallery $gallery): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $form = $this->createForm(GalleryType::class, $gallery);
 
         $form->handleRequest($request);

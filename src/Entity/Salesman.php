@@ -4,73 +4,66 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An employee who works in sales.
- *
- * @ORM\Entity
  */
+#[ORM\Entity]
 class Salesman
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\Id
-     *
-     * @var int
-     */
-    protected $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[ORM\Id]
+    protected ?int $id = null;
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(type="string", length=50)
-     *
-     * @var string
-     */
-    protected $name;
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string', length: 50)]
+    protected string $name = '';
 
+    #[ORM\OneToMany(targetEntity: SalesmanProductArea::class, mappedBy: 'salesman', cascade: ['all'], orphanRemoval: true)]
     /**
-     * @ORM\OneToMany(targetEntity="SalesmanProductArea", mappedBy="salesman", cascade={"all"}, orphanRemoval=true)
-     *
-     * @var ArrayCollection|SalesmanProductArea[]
+     * @var Collection|SalesmanProductArea[]
      */
-    protected $productAreas;
+    protected Collection $productAreas;
 
     public function __construct()
     {
         $this->productAreas = new ArrayCollection;
     }
 
-    public function addProductArea(SalesmanProductArea $productArea)
+    public function addProductArea(SalesmanProductArea $productArea): void
     {
         $this->productAreas->add($productArea);
         $productArea->setSalesman($this);
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getProductAreas()
+	/***
+	 * @return Collection|SalesmanProductArea[]
+	 */
+    public function getProductAreas(): Collection|array
     {
         return $this->productAreas;
     }
 
-    public function removeProductArea(SalesmanProductArea $productArea)
+    public function removeProductArea(SalesmanProductArea $productArea): void
     {
         $this->productAreas->removeElement($productArea);
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
-        $this->name = $name;
+        $this->name = $name ?? '';
     }
 }

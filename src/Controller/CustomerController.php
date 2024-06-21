@@ -12,12 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CustomerController extends AbstractController
 {
-    /**
-     * @Route("/customer", name="customer")
-     * @param Request $request
-     * @return Response
-     */
-    public function addAction(Request $request)
+    #[Route('/customer', name: 'customer')]
+    public function addAction(Request $request): Response
     {
         $customer = new Customer();
         $customer->name = 'John Smith';

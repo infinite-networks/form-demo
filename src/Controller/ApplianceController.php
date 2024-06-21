@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Appliance;
 use App\Form\Type\ApplianceType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as Feb;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,23 +13,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ApplianceController extends AbstractController
 {
-    /**
-     * @Route("/appliance/", name="appliance_list")
-     * @return Response
-     */
-    public function listAction()
+	public function __construct(
+		private readonly ManagerRegistry $doctrine,
+	)
+	{
+	}
+
+	#[Route('/appliance/', name: 'appliance_list')]
+    public function listAction(): Response
     {
         return $this->render('Appliance/list.html.twig', [
-            'appliances' => $this->getDoctrine()->getRepository(Appliance::class)->findAll(),
+            'appliances' => $this->doctrine->getRepository(Appliance::class)->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/appliance/add", name="appliance_add")
-     * @param Request $request
-     * @return Response
-     */
-    public function addAction(Request $request)
+    #[Route('/appliance/add', name: 'appliance_add')]
+    public function addAction(Request $request): Response
     {
         $appliance = new Appliance;
         $form = $this->createForm(ApplianceType::class, $appliance);
@@ -36,7 +36,7 @@ class ApplianceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($appliance);
             $em->flush();
 
@@ -48,16 +48,10 @@ class ApplianceController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/appliance/{id}/edit", name="appliance_edit", requirements={"id" = "\d+"})
-     * @Feb\ParamConverter("appliance", converter="doctrine.orm")
-     * @param Appliance $appliance
-     * @param Request $request
-     * @return Response
-     */
-    public function editAction(Request $request, Appliance $appliance)
+    #[Route('/appliance/{id}/edit', name: 'appliance_edit', requirements: ['id' => '\d+'])]
+    public function editAction(Request $request, #[MapEntity] Appliance $appliance): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $form = $this->createForm(ApplianceType::class, $appliance);
 
         $form->handleRequest($request);

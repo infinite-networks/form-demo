@@ -6,25 +6,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Address
 {
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    public $line1;
+    #[Assert\NotBlank]
+    public ?string $line1 = null;
 
-    /**
-     * @var string
-     */
-    public $line2;
+    public ?string $line2 = null;
 
-    /**
-     * @var string
-     */
-    public $line3;
+    public ?string $line3 = null;
 
-    /**
-     * @Assert\NotBlank
-     * @var string
-     */
-    public $postcode;
+    #[Assert\NotBlank]
+    public ?string $postcode = null;
 }
