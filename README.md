@@ -1,7 +1,7 @@
 Infinite Form Demo (6.4)
 ===============
 
-A project to demonstrate the Infinite Form bundle under Symfony 6.4.
+A project to demonstrate the Infinite Form bundle under Symfony 7.1.
 
 Installation
 ------------
