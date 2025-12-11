@@ -11,9 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Intl\Countries;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Routing\Attribute\Route;
 
 class CountryController extends AbstractController
 {
@@ -58,7 +58,7 @@ class CountryController extends AbstractController
     public function loadCountriesAction(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('country_setup', $request->request->get('_token'))) {
-            throw new InvalidCsrfTokenException();
+            throw new AccessDeniedHttpException();
         }
 
         /** @var EntityManager $em */

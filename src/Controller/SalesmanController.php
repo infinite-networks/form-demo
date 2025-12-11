@@ -12,8 +12,8 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Attribute\Route;
 
 class SalesmanController extends AbstractController
 {
@@ -64,7 +64,7 @@ class SalesmanController extends AbstractController
     public function loadDefaultsAction(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('salesman_setup', $request->request->get('_token'))) {
-            throw new InvalidCsrfTokenException();
+            throw new AccessDeniedHttpException();
         }
 
         /** @var EntityManager $em */
